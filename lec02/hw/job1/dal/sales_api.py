@@ -3,6 +3,7 @@ import json
 import os
 import logging
 import time
+import pprint
 
 # Importing third party modules
 from dotenv import load_dotenv
@@ -40,19 +41,23 @@ BACKOFF_FACTOR: float = 2.0
 RETRY_STATUS_CODES: set[int] = {500, 502, 503, 504}
 
 
-def _fetch_page_data(
-    date: str, page: int, headers: Dict[str, str]
-) -> List[Dict[str, Any]] | None:
+def get_sales_per_page(date: str, page: int) -> List[Dict[str, Any]] | None:
     """
     Fetches a single page of sales data from the API.
 
     :param date: The date for which to fetch data.
     :param page: The page number to fetch.
-    :param headers: The request headers including authorization.
+    :param headers: The request headers include authorization.
     :return: A list of sales data dictionaries for the page, or None if the page indicates the end of data.
     :raises ValueError: If the API response is not a list.
     :raises ConnectionError: For network-related errors or non-404 HTTP errors.
     """
+
+    if not AUTH_TOKEN:
+        logger.error(ERR_TOKEN_MISSING)
+        raise ValueError(ERR_TOKEN_MISSING)
+
+    headers: Dict[str, str] = {"Authorization": AUTH_TOKEN}
     params: Dict[str, str] = {"page": str(page), "date": date}
     last_exception: Exception | None = None
 
@@ -122,26 +127,24 @@ def _fetch_page_data(
     ) from last_exception
 
 
-def get_sales(date: str) -> List[Dict[str, Any]]:
+def get_all_sales_aggregated(date: str) -> List[Dict[str, Any]]:
     """
-    Fetches all sales data for a given date from the API, handling pagination.
+    DEPRECATED for page-by-page saving. Kept for reference/learning.
+    Fetches ALL sales data for a given date, aggregating results in memory.
+    WARNING: Can consume a lot of memory for large datasets.
 
     :param date: The date of the sales data to retrieve (e.g., "YYYY-MM-DD").
-    :return: A list of dictionaries, each representing a sales record.
+    :return: A list of all sales records for the date.
     :raises ValueError: If AUTH_TOKEN is not set or the API response format is invalid.
     :raises ConnectionError: If network or unexpected API errors occur during fetching.
     """
-    if not AUTH_TOKEN:
-        logger.error(ERR_TOKEN_MISSING)
-        raise ValueError(ERR_TOKEN_MISSING)
 
     all_sales_data: List[Dict[str, Any]] = []
     page: int = 1
-    headers: Dict[str, str] = {"Authorization": AUTH_TOKEN}
 
     while True:
         logger.info(f"Fetching page {page} for date {date}...")
-        page_data = _fetch_page_data(date, page, headers)
+        page_data = get_sales_per_page(date=date, page=page)
 
         if page_data is None:  # End of data signal (empty page or 404)
             break
@@ -153,19 +156,41 @@ def get_sales(date: str) -> List[Dict[str, Any]]:
     return all_sales_data
 
 
+# Main function for testing the API
 if __name__ == "__main__":
-    try:
-        # Set an example target date
-        target_date = "2022-08-09"
-        # Get sales data for the target date
-        sales_data = get_sales(target_date)
-        # Print first 100 records (or fewer if less data)
-        print(f"First {min(100, len(sales_data))} records for {target_date}:")
-        for record in sales_data[:100]:
-            print(record)
-    except (ValueError, ConnectionError) as e:
-        # Log expected errors during execution
-        logger.error(f"Failed to get sales data: {e}")
-    except Exception as e:
-        # Log unexpected errors during execution
-        logger.exception(f"An unexpected error occurred: {e}")
+    if not AUTH_TOKEN:
+        logger.error(ERR_TOKEN_MISSING)
+        raise ValueError(ERR_TOKEN_MISSING)
+    else:
+        try:
+            # Set an example target date
+            target_date = "2022-08-09"
+            page = 4
+            num_records_to_display = 50
+
+            # Fetch sales data for the target date per page
+            page_data = get_sales_per_page(date=target_date, page=page)
+
+            if page_data is not None:
+                print(
+                    f"{min(num_records_to_display, len(page_data))} records for {target_date}:"
+                )
+                pprint.pprint(page_data[:num_records_to_display])
+            else:
+                print(f"There is no more data for {target_date} and page {page}")
+
+            # Get sales data for the target date
+            # all_sales_per_data = get_all_sales_aggregated(target_date)
+            # Print the first 100 records (or fewer if less data)
+            # print(
+            #     f"First {min(num_records_to_display, len(all_sales_per_data))} records for {
+            #     target_date}:"
+            # )
+            # pprint.pprint(all_sales_per_data[:num_records_to_display])
+
+        except (ValueError, ConnectionError) as e:
+            # Log expected errors during execution
+            logger.error(f"Failed to get sales data: {e}")
+        except Exception as e:
+            # Log unexpected errors during execution
+            logger.exception(f"An unexpected error occurred: {e}")
