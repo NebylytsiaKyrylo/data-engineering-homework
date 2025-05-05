@@ -77,3 +77,9 @@ def run_job_endpoint() -> Tuple[Dict[str, Any], int]:
     except Exception as e:
         logger.exception(f"An unexpected error occurred: {e}", exc_info=True)
         return {"error": f"An unexpected error occurred: {e}"}, 500
+
+
+# Main function to start the Flask server and run the application
+if __name__ == "__main__":
+    logger.info("Démarrage du serveur Flask pour Job 1...")
+    app.run(debug=True, host="0.0.0.0", port=8081)
