@@ -9,7 +9,7 @@ from typing import Any, Dict, List
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    # filename="sales_api.log",
+    # filename="local_disk.log",
     # filemode="a",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
