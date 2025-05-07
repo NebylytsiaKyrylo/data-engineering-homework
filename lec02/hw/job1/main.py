@@ -12,7 +12,7 @@ load_dotenv()
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    # filename="sales_api.log", # Uncomment to log to file
+    # filename=str(os.path.basename(__file__).replace(".py", ".log")), # Uncomment to log to file
     # filemode="a", # Append mode for a log file
     datefmt="%Y-%m-%d %H:%M:%S",
 )
@@ -81,5 +81,5 @@ def run_job_endpoint() -> Tuple[Dict[str, Any], int]:
 
 # Main function to start the Flask server and run the application
 if __name__ == "__main__":
-    logger.info("Démarrage du serveur Flask pour Job 1...")
+    logger.info("Flask server startup for Job 1...")
     app.run(debug=True, host="0.0.0.0", port=8081)

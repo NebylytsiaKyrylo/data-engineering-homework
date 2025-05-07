@@ -4,16 +4,6 @@ from lec02.hw.job1.dal import sales_api
 from lec02.hw.job1.dal import local_disk
 
 
-# Configure logging to output to the console (stdout/stderr)
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    # filename="sales_api.log",
-    # filemode="a",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
-
-
 # Get a logger specific to this module
 logger = logging.getLogger(__name__)
 

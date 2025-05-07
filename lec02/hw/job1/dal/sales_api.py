@@ -13,14 +13,6 @@ from typing import Any, Dict, List, Optional
 # Load environment variables
 load_dotenv()
 
-# Configure logging to output to the console (stdout/stderr)
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    # filename="sales_api.log",
-    # filemode="a",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
 # Get a logger specific to this module
 logger = logging.getLogger(__name__)
 
