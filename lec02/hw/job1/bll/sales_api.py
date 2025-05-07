@@ -1,7 +1,6 @@
 import logging
 
-from lec02.hw.job1.dal import sales_api
-from lec02.hw.job1.dal import local_disk
+from lec02.hw.job1.dal import sales_api, local_disk
 
 
 # Get a logger specific to this module
@@ -26,7 +25,7 @@ def save_sales_to_local_disk(date: str, raw_dir: str) -> None:
     logger.info(f"Saving sales data for {date} to local disk.")
 
     try:
-        # Create storage directory if it doesn't exist
+        # Create a storage directory if it doesn't exist
         logger.info(f"Preparing storage directory {raw_dir}...")
         local_disk.prepare_storage_dir(dir_path=raw_dir)
         logger.info(f"Storage directory {raw_dir} created successfully.")
