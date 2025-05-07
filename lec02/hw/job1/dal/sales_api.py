@@ -22,9 +22,9 @@ ERR_TOKEN_MISSING: str = "AUTH_TOKEN is not set"
 AUTH_TOKEN = os.environ.get(ENV_AUTH_TOKEN)
 
 # API URL Configuration
-BASE_URL: str = "https://fake-api-vycpfa6oca-uc.a.run.app"  # Base API URL
-ENDPOINT_SALES: str = "/sales"  # Sales data endpoint
-API_URL: str = BASE_URL + ENDPOINT_SALES  # Complete API URL
+BASE_URL: str = "https://fake-api-vycpfa6oca-uc.a.run.app"
+ENDPOINT_SALES: str = "/sales"
+API_URL: str = BASE_URL + ENDPOINT_SALES
 
 # Retry configuration
 MAX_RETRIES: int = 3
@@ -119,35 +119,6 @@ def get_sales_per_page(date: str, page: int) -> List[Dict[str, Any]] | None:
     ) from last_exception
 
 
-def get_all_sales_aggregated(date: str) -> List[Dict[str, Any]]:
-    """
-    DEPRECATED for page-by-page saving. Kept for reference/learning.
-    Fetches ALL sales data for a given date, aggregating results in memory.
-    WARNING: Can consume a lot of memory for large datasets.
-
-    :param date: The date of the sales data to retrieve (e.g., "YYYY-MM-DD").
-    :return: A list of all sales records for the date.
-    :raises ValueError: If AUTH_TOKEN is not set or the API response format is invalid.
-    :raises ConnectionError: If network or unexpected API errors occur during fetching.
-    """
-
-    all_sales_data: List[Dict[str, Any]] = []
-    page: int = 1
-
-    while True:
-        logger.info(f"Fetching page {page} for date {date}...")
-        page_data = get_sales_per_page(date=date, page=page)
-
-        if page_data is None:  # End of data signal (empty page or 404)
-            break
-
-        all_sales_data.extend(page_data)
-        page += 1
-
-    logger.info(f"Successfully fetched {len(all_sales_data)} records for date {date}.")
-    return all_sales_data
-
-
 # Main function for testing the API
 if __name__ == "__main__":
     if not AUTH_TOKEN:
@@ -170,15 +141,6 @@ if __name__ == "__main__":
                 pprint.pprint(page_data[:num_records_to_display])
             else:
                 print(f"There is no more data for {target_date} and page {page}")
-
-            # Get sales data for the target date
-            # all_sales_per_data = get_all_sales_aggregated(target_date)
-            # Print the first 100 records (or fewer if less data)
-            # print(
-            #     f"First {min(num_records_to_display, len(all_sales_per_data))} records for {
-            #     target_date}:"
-            # )
-            # pprint.pprint(all_sales_per_data[:num_records_to_display])
 
         except (ValueError, ConnectionError) as e:
             # Log expected errors during execution
