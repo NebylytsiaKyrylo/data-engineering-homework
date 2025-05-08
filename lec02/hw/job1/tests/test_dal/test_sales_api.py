@@ -269,7 +269,14 @@ def test_get_sales_per_page_network_error_with_retry(mock_sleep, mock_requests_g
     # Create a successful response for the second attempt
     mock_response_success = mock.Mock()
     mock_response_success.status_code = 200
-    fake_page_data = [{"client": "Test Client", "purchase_date": "2024-05-07", "product": "Test Product", "price": 100}]
+    fake_page_data = [
+        {
+            "client": "Test Client",
+            "purchase_date": "2024-05-07",
+            "product": "Test Product",
+            "price": 100,
+        }
+    ]
     mock_response_success.json.return_value = fake_page_data
     mock_response_success.raise_for_status.return_value = None
 
@@ -295,10 +302,16 @@ def test_get_sales_per_page_network_error_with_retry(mock_sleep, mock_requests_g
     # Verify both requests were made with correct parameters
     expected_headers = {"Authorization": "test_token"}
     expected_params = {"page": str(test_page), "date": test_date}
-    mock_requests_get.assert_has_calls([
-        mock.call(API_URL, headers=expected_headers, params=expected_params, timeout=20),
-        mock.call(API_URL, headers=expected_headers, params=expected_params, timeout=20)
-    ])
+    mock_requests_get.assert_has_calls(
+        [
+            mock.call(
+                API_URL, headers=expected_headers, params=expected_params, timeout=20
+            ),
+            mock.call(
+                API_URL, headers=expected_headers, params=expected_params, timeout=20
+            ),
+        ]
+    )
 
 
 @mock.patch("lec02.hw.job1.dal.sales_api.AUTH_TOKEN", "test_token")
@@ -317,7 +330,14 @@ def test_get_sales_per_page_retryable_http_error(mock_sleep, mock_requests_get):
     # Create a successful response for the second attempt
     mock_response_success = mock.Mock()
     mock_response_success.status_code = 200
-    fake_page_data = [{"client": "Test Client", "purchase_date": "2024-05-07", "product": "Test Product", "price": 100}]
+    fake_page_data = [
+        {
+            "client": "Test Client",
+            "purchase_date": "2024-05-07",
+            "product": "Test Product",
+            "price": 100,
+        }
+    ]
     mock_response_success.json.return_value = fake_page_data
     mock_response_success.raise_for_status.return_value = None
 
@@ -343,10 +363,16 @@ def test_get_sales_per_page_retryable_http_error(mock_sleep, mock_requests_get):
     # Verify both requests were made with correct parameters
     expected_headers = {"Authorization": "test_token"}
     expected_params = {"page": str(test_page), "date": test_date}
-    mock_requests_get.assert_has_calls([
-        mock.call(API_URL, headers=expected_headers, params=expected_params, timeout=20),
-        mock.call(API_URL, headers=expected_headers, params=expected_params, timeout=20)
-    ])
+    mock_requests_get.assert_has_calls(
+        [
+            mock.call(
+                API_URL, headers=expected_headers, params=expected_params, timeout=20
+            ),
+            mock.call(
+                API_URL, headers=expected_headers, params=expected_params, timeout=20
+            ),
+        ]
+    )
 
 
 @mock.patch("lec02.hw.job1.dal.sales_api.AUTH_TOKEN", "test_token")
@@ -370,7 +396,9 @@ def test_get_sales_per_page_max_retries_reached(mock_sleep, mock_requests_get):
         get_sales_per_page(date=test_date, page=test_page)
 
     # Assert error message contains expected information
-    assert f"Failed to fetch page {test_page} after {MAX_RETRIES} attempts" in str(excinfo.value)
+    assert f"Failed to fetch page {test_page} after {MAX_RETRIES} attempts" in str(
+        excinfo.value
+    )
 
     # Verify request was made MAX_RETRIES times
     assert mock_requests_get.call_count == MAX_RETRIES

@@ -166,9 +166,7 @@ def test_prepare_storage_dir_when_makedirs_fails(
 @mock.patch("lec02.hw.job1.dal.local_disk.json.dump")
 @mock.patch("lec02.hw.job1.dal.local_disk.os.path.join")
 @mock.patch("lec02.hw.job1.dal.local_disk.logger.info")
-def test_save_page_to_disk_success(
-    mock_logger_info, mock_os_path_join, mock_json_dump
-):
+def test_save_page_to_disk_success(mock_logger_info, mock_os_path_join, mock_json_dump):
     """Test save_page_to_disk function behavior when successfully saving data to disk."""
 
     # Setup test data
@@ -257,7 +255,9 @@ def test_save_page_to_disk_type_error(
     """Test save_page_to_disk function behavior when a TypeError occurs during JSON serialization."""
 
     # Setup test data with a non-serializable object (a function)
-    test_data = [{"id": 1, "function": lambda x: x}]  # Functions are not JSON serializable
+    test_data = [
+        {"id": 1, "function": lambda x: x}
+    ]  # Functions are not JSON serializable
     test_dir = "test/directory"
     test_filename = "test_file.json"
     test_filepath = f"{test_dir}/{test_filename}"

@@ -9,7 +9,7 @@ from lec02.hw.job1.main import app, run_job_endpoint
 @pytest.fixture
 def client():
     """Fixture to create a test client for the Flask application."""
-    app.config['TESTING'] = True
+    app.config["TESTING"] = True
     with app.test_client() as client:
         yield client
 
@@ -25,9 +25,7 @@ def test_run_job_endpoint_success(mock_save_sales_to_local_disk, client):
 
     # Call endpoint with test data
     response = client.post(
-        "/",
-        data=json.dumps(test_input),
-        content_type="application/json"
+        "/", data=json.dumps(test_input), content_type="application/json"
     )
 
     # Assert response status code and content
@@ -45,11 +43,7 @@ def test_run_job_endpoint_no_input_data(client):
     """Test run_job_endpoint function behavior when no input data is provided."""
 
     # Call endpoint with empty JSON object
-    response = client.post(
-        "/",
-        data=json.dumps({}),
-        content_type="application/json"
-    )
+    response = client.post("/", data=json.dumps({}), content_type="application/json")
 
     # Assert response status code and error message
     assert response.status_code == 400
@@ -65,9 +59,7 @@ def test_run_job_endpoint_missing_date(client):
 
     # Call endpoint with test data
     response = client.post(
-        "/",
-        data=json.dumps(test_input),
-        content_type="application/json"
+        "/", data=json.dumps(test_input), content_type="application/json"
     )
 
     # Assert response status code and error message
@@ -84,9 +76,7 @@ def test_run_job_endpoint_missing_raw_dir(client):
 
     # Call endpoint with test data
     response = client.post(
-        "/",
-        data=json.dumps(test_input),
-        content_type="application/json"
+        "/", data=json.dumps(test_input), content_type="application/json"
     )
 
     # Assert response status code and error message
@@ -110,9 +100,7 @@ def test_run_job_endpoint_value_error(mock_save_sales_to_local_disk, client):
 
     # Call endpoint with test data
     response = client.post(
-        "/",
-        data=json.dumps(test_input),
-        content_type="application/json"
+        "/", data=json.dumps(test_input), content_type="application/json"
     )
 
     # Assert response status code and error message
@@ -141,9 +129,7 @@ def test_run_job_endpoint_connection_error(mock_save_sales_to_local_disk, client
 
     # Call endpoint with test data
     response = client.post(
-        "/",
-        data=json.dumps(test_input),
-        content_type="application/json"
+        "/", data=json.dumps(test_input), content_type="application/json"
     )
 
     # Assert response status code and error message
@@ -172,9 +158,7 @@ def test_run_job_endpoint_os_error(mock_save_sales_to_local_disk, client):
 
     # Call endpoint with test data
     response = client.post(
-        "/",
-        data=json.dumps(test_input),
-        content_type="application/json"
+        "/", data=json.dumps(test_input), content_type="application/json"
     )
 
     # Assert response status code and error message
@@ -203,9 +187,7 @@ def test_run_job_endpoint_unexpected_error(mock_save_sales_to_local_disk, client
 
     # Call endpoint with test data
     response = client.post(
-        "/",
-        data=json.dumps(test_input),
-        content_type="application/json"
+        "/", data=json.dumps(test_input), content_type="application/json"
     )
 
     # Assert response status code and error message
