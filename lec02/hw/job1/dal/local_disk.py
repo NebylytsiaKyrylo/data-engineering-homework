@@ -40,8 +40,8 @@ def prepare_storage_dir(dir_path: str) -> None:
         logger.info(f"Directory {dir_path} created successfully.")
 
     except OSError as e:
-        logger.error(f"Error creating directory {dir_path}: {e}", exc_info=True)
-        raise OSError(f"Error creating directory {dir_path}: {e}") from e
+        logger.error(f"Error with directory {dir_path}: {e}", exc_info=True)
+        raise OSError(f"Error with directory {dir_path}: {e}") from e
     except Exception as e:
         logger.exception(f"An unexpected error occurred: {e}")
         raise Exception(f"An unexpected error occurred: {e}") from e
